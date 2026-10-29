@@ -1,0 +1,539 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --accent-glow: rgba(99, 102, 241, 0.22);
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    --card-surface: #111116;
+    --card-border: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Theme 1: Minimalist Enterprise Dark (Linear / Vercel Style - Recommended Default) */
+  [data-theme='enterprise-dark'] {
+    --accent-glow: rgba(99, 102, 241, 0.22);
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    --card-surface: #111116;
+    --card-border: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Theme 2: Cyber Neon (Classic Esports) */
+  [data-theme='cyber-neon'] {
+    --accent-glow: rgba(0, 240, 255, 0.35);
+    --primary-gradient: linear-gradient(135deg, #00f0ff 0%, #3b82f6 50%, #9333ea 100%);
+    --card-surface: #0a0f1d;
+    --card-border: rgba(0, 240, 255, 0.14);
+  }
+
+  /* Theme 3: Stealth Gold / Apex Tournament */
+  [data-theme='stealth-gold'] {
+    --accent-glow: rgba(245, 158, 11, 0.3);
+    --primary-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+    --card-surface: #12100d;
+    --card-border: rgba(245, 158, 11, 0.16);
+  }
+
+  /* Theme 4: Crimson LAN Predator */
+  [data-theme='crimson-esports'] {
+    --accent-glow: rgba(244, 63, 94, 0.3);
+    --primary-gradient: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #9f1239 100%);
+    --card-surface: #140d10;
+    --card-border: rgba(244, 63, 94, 0.16);
+  }
+
+  /* Theme 5: Nordic Frost / Arctic Clean */
+  [data-theme='nordic-frost'] {
+    --accent-glow: rgba(56, 189, 248, 0.25);
+    --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+    --card-surface: #0e131f;
+    --card-border: rgba(255, 255, 255, 0.09);
+  }
+
+  /* Theme 6: Pure Studio White / Clean Light Theme */
+  [data-theme='white-clean'],
+  html.light,
+  [data-theme='white-clean'] body,
+  html.light body {
+    --accent-glow: rgba(99, 102, 241, 0.15);
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    --card-surface: #ffffff;
+    --card-border: #e2e8f0;
+  }
+
+  body {
+    @apply bg-dark-950 text-zinc-100 font-sans antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white;
+    background-color: #09090b;
+    background-image: 
+      radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.04) 0px, transparent 65%),
+      radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.02) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Clean Minimalist Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #09090b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+  }
+}
+
+@layer components {
+  /* Minimalist Enterprise Cards (Linear / Vercel style) */
+  .gaming-card {
+    background: var(--card-surface, #111116);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08));
+    border-radius: 0.875rem;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .gaming-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.65), 0 0 15px -3px var(--accent-glow);
+  }
+
+  .gaming-card-interactive {
+    @apply gaming-card cursor-pointer hover:translate-y-[-2px];
+  }
+
+  /* Sleek Modern Form Inputs */
+  .gaming-input, .input-field {
+    background: rgba(24, 24, 27, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #f4f4f5;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+  }
+
+  .gaming-input:focus, .input-field:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+    background: #18181b;
+  }
+
+  /* Sleek Indigo Primary Button */
+  .btn-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* High-Contrast Action Button */
+  .btn-cyan {
+    background: #ffffff;
+    color: #09090b;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+  }
+
+  .btn-cyan:hover {
+    background: #f4f4f5;
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .btn-cyan:active {
+    transform: scale(0.98);
+  }
+
+  .btn-secondary {
+    background: rgba(24, 24, 27, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e4e4e7;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(39, 39, 42, 0.9);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .btn-secondary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-danger {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    font-weight: 600;
+    padding: 0.375rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+  }
+
+  .btn-danger:hover {
+    background: rgba(239, 68, 68, 0.22);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
+  .glass-panel {
+    background: var(--card-surface, #111116);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08));
+  }
+}
+
+/* ==========================================================================
+   PURE STUDIO WHITE / LIGHT THEME STYLES
+   ========================================================================== */
+[data-theme='white-clean'],
+html.light {
+  color-scheme: light;
+}
+
+[data-theme='white-clean'] body,
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  background-image: 
+    radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 65%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.03) 0px, transparent 50%) !important;
+}
+
+[data-theme='white-clean'] ::-webkit-scrollbar-track,
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+[data-theme='white-clean'] ::-webkit-scrollbar-thumb,
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+[data-theme='white-clean'] ::-webkit-scrollbar-thumb:hover,
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Base Layout Backgrounds in White Mode */
+[data-theme='white-clean'] .bg-dark-950,
+html.light .bg-dark-950,
+[data-theme='white-clean'] .bg-\[\#07090e\],
+html.light .bg-\[\#07090e\],
+[data-theme='white-clean'] .bg-\[\#05070c\],
+html.light .bg-\[\#05070c\] {
+  background-color: #f8fafc !important;
+}
+
+/* Elevated Surfaces, Headers, Sidebars in White Mode */
+[data-theme='white-clean'] aside,
+html.light aside,
+[data-theme='white-clean'] header,
+html.light header,
+[data-theme='white-clean'] .bg-dark-900,
+html.light .bg-dark-900,
+[data-theme='white-clean'] .bg-dark-850,
+html.light .bg-dark-850,
+[data-theme='white-clean'] .bg-\[\#0b0e17\],
+html.light .bg-\[\#0b0e17\],
+[data-theme='white-clean'] .bg-\[\#0d111e\],
+html.light .bg-\[\#0d111e\],
+[data-theme='white-clean'] .bg-\[\#0c101d\],
+html.light .bg-\[\#0c101d\],
+[data-theme='white-clean'] .bg-\[\#0d1222\],
+html.light .bg-\[\#0d1222\],
+[data-theme='white-clean'] .bg-\[\#0b0f1a\],
+html.light .bg-\[\#0b0f1a\],
+[data-theme='white-clean'] .bg-\[\#0e1424\],
+html.light .bg-\[\#0e1424\],
+[data-theme='white-clean'] .bg-\[\#0e1322\],
+html.light .bg-\[\#0e1322\],
+[data-theme='white-clean'] .bg-\[\#0d111d\],
+html.light .bg-\[\#0d111d\],
+[data-theme='white-clean'] .bg-\[\#090d16\],
+html.light .bg-\[\#090d16\],
+[data-theme='white-clean'] .gaming-card,
+html.light .gaming-card {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Secondary Panels, Badges, Table Rows */
+[data-theme='white-clean'] .bg-zinc-900,
+html.light .bg-zinc-900,
+[data-theme='white-clean'] .bg-zinc-850,
+html.light .bg-zinc-850,
+[data-theme='white-clean'] .bg-zinc-900\/60,
+html.light .bg-zinc-900\/60,
+[data-theme='white-clean'] .bg-zinc-900\/80,
+html.light .bg-zinc-900\/80,
+[data-theme='white-clean'] .bg-zinc-900\/50,
+html.light .bg-zinc-900\/50,
+[data-theme='white-clean'] .bg-zinc-900\/40,
+html.light .bg-zinc-900\/40 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme='white-clean'] .bg-dark-950\/40,
+html.light .bg-dark-950\/40,
+[data-theme='white-clean'] .bg-dark-950\/60,
+html.light .bg-dark-950\/60,
+[data-theme='white-clean'] .bg-dark-850\/50,
+html.light .bg-dark-850\/50 {
+  background-color: #f8fafc !important;
+}
+
+/* Border Rules in White Mode */
+[data-theme='white-clean'] .border-zinc-800,
+html.light .border-zinc-800,
+[data-theme='white-clean'] .border-zinc-900,
+html.light .border-zinc-900,
+[data-theme='white-clean'] .border-dark-800,
+html.light .border-dark-800,
+[data-theme='white-clean'] .border-dark-700,
+html.light .border-dark-700,
+[data-theme='white-clean'] .border-zinc-800\/80,
+html.light .border-zinc-800\/80,
+[data-theme='white-clean'] .border-white\/10,
+html.light .border-white\/10 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Typography in White Mode */
+[data-theme='white-clean'] .text-white,
+html.light .text-white {
+  color: #0f172a !important;
+}
+[data-theme='white-clean'] .text-zinc-100,
+html.light .text-zinc-100,
+[data-theme='white-clean'] .text-zinc-200,
+html.light .text-zinc-200 {
+  color: #1e293b !important;
+}
+[data-theme='white-clean'] .text-zinc-300,
+html.light .text-zinc-300,
+[data-theme='white-clean'] .text-zinc-400,
+html.light .text-zinc-400 {
+  color: #475569 !important;
+}
+[data-theme='white-clean'] .text-zinc-500,
+html.light .text-zinc-500,
+[data-theme='white-clean'] .text-slate-400,
+html.light .text-slate-400,
+[data-theme='white-clean'] .text-slate-500,
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Vibrant Accent text readable on white */
+[data-theme='white-clean'] .text-emerald-400,
+html.light .text-emerald-400 {
+  color: #059669 !important;
+}
+[data-theme='white-clean'] .text-indigo-300,
+html.light .text-indigo-300,
+[data-theme='white-clean'] .text-indigo-400,
+html.light .text-indigo-400 {
+  color: #4f46e5 !important;
+}
+[data-theme='white-clean'] .text-cyan-300,
+html.light .text-cyan-300,
+[data-theme='white-clean'] .text-cyan-400,
+html.light .text-cyan-400 {
+  color: #0284c7 !important;
+}
+[data-theme='white-clean'] .text-amber-400,
+html.light .text-amber-400,
+[data-theme='white-clean'] .text-amber-300,
+html.light .text-amber-300 {
+  color: #d97706 !important;
+}
+[data-theme='white-clean'] .text-red-400,
+html.light .text-red-400,
+[data-theme='white-clean'] .text-rose-400,
+html.light .text-rose-400 {
+  color: #dc2626 !important;
+}
+
+/* Inputs & Form Controls in White Mode */
+[data-theme='white-clean'] input,
+html.light input,
+[data-theme='white-clean'] select,
+html.light select,
+[data-theme='white-clean'] textarea,
+html.light textarea,
+[data-theme='white-clean'] .gaming-input,
+html.light .gaming-input,
+[data-theme='white-clean'] .input-field,
+html.light .input-field {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme='white-clean'] input::placeholder,
+html.light input::placeholder,
+[data-theme='white-clean'] textarea::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Hero Cards in White Mode */
+[data-theme='white-clean'] .bg-gradient-to-r.from-\[\#0d1326\],
+html.light .bg-gradient-to-r.from-\[\#0d1326\] {
+  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 50%, #f0fdfa 100%) !important;
+  border-color: #c7d2fe !important;
+}
+
+[data-theme='white-clean'] .bg-gradient-to-br.from-\[\#0c1a17\],
+html.light .bg-gradient-to-br.from-\[\#0c1a17\],
+[data-theme='white-clean'] .bg-gradient-to-r.from-\[\#0a1815\],
+html.light .bg-gradient-to-r.from-\[\#0a1815\] {
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 50%, #f0fdf4 100%) !important;
+  border-color: #a7f3d0 !important;
+}
+
+[data-theme='white-clean'] .bg-gradient-to-r.from-\[\#17130a\],
+html.light .bg-gradient-to-r.from-\[\#17130a\] {
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 50%, #fef3c7 100%) !important;
+  border-color: #fde68a !important;
+}
+
+[data-theme='white-clean'] .bg-gradient-to-r.from-\[\#121630\],
+html.light .bg-gradient-to-r.from-\[\#121630\] {
+  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 50%, #e0e7ff 100%) !important;
+  border-color: #c7d2fe !important;
+}
+
+/* Gamer Card in Wallet retains its digital cyberpunk look */
+[data-theme='white-clean'] .bg-gradient-to-tr.from-\[\#15122e\],
+html.light .bg-gradient-to-tr.from-\[\#15122e\] {
+  background: linear-gradient(135deg, #2e1065 0%, #1e1b4b 50%, #0f172a 100%) !important;
+}
+
+[data-theme='white-clean'] .bg-gradient-to-tr.from-\[\#15122e\] .text-white,
+html.light .bg-gradient-to-tr.from-\[\#15122e\] .text-white,
+[data-theme='white-clean'] .bg-gradient-to-tr.from-\[\#15122e\] .text-zinc-300,
+html.light .bg-gradient-to-tr.from-\[\#15122e\] .text-zinc-300,
+[data-theme='white-clean'] .bg-gradient-to-tr.from-\[\#15122e\] .text-zinc-400,
+html.light .bg-gradient-to-tr.from-\[\#15122e\] .text-zinc-400 {
+  color: #ffffff !important;
+}
+
+[data-theme='white-clean'] .bg-black\/50,
+html.light .bg-black\/50,
+[data-theme='white-clean'] .bg-black\/60,
+html.light .bg-black\/60,
+[data-theme='white-clean'] .bg-black\/40,
+html.light .bg-black\/40 {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Sidebar Nav Links in White Mode */
+[data-theme='white-clean'] aside .bg-zinc-850,
+html.light aside .bg-zinc-850 {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-left-color: #6366f1 !important;
+}
+
+[data-theme='white-clean'] aside a:hover,
+html.light aside a:hover {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+/* User Portal Nav Link active in White Mode */
+[data-theme='white-clean'] nav a.bg-indigo-600\/20,
+html.light nav a.bg-indigo-600\/20 {
+  background-color: #e0e7ff !important;
+  color: #4338ca !important;
+  border-color: #c7d2fe !important;
+}
+
+/* Modals & Backdrop in White Mode */
+[data-theme='white-clean'] .bg-black\/80,
+html.light .bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+}
+
+[data-theme='white-clean'] .shadow-2xl,
+html.light .shadow-2xl,
+[data-theme='white-clean'] .shadow-xl,
+html.light .shadow-xl {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 24px;
+  }
+}
