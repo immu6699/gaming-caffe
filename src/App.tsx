@@ -40,11 +40,18 @@ import { UserTournamentsPage } from './pages/user/UserTournamentsPage';
 import { UserWalletPage } from './pages/user/UserWalletPage';
 import { UserProfilePage } from './pages/user/UserProfilePage';
 
+// Client PC Kiosk & Remote Lock Screen (The 20 Client PCs)
+import { ClientStationKioskPage } from './pages/ClientStationKioskPage';
+
 export const App: React.FC = () => {
   return (
     <AppProvider>
       <BrowserRouter>
         <Routes>
+          {/* Client PC Kiosk Display for the 20 Cafe PCs */}
+          <Route path="/client/:stationId" element={<ClientStationKioskPage />} />
+          <Route path="/kiosk" element={<ClientStationKioskPage />} />
+
           {/* Gamer Portal (Customer View) */}
           <Route path="/user" element={<UserLayout />}>
             <Route index element={<UserDashboardPage />} />

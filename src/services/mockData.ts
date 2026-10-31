@@ -1310,3 +1310,37 @@ export const initialRigHealth: RigHardwareHealth[] = [
   },
 ];
 
+// Initial 1v1 LAN Challenges across stations
+export const initialLanChallenges: import('../types').LanChallenge[] = [
+  {
+    id: 'chal-01',
+    fromStationName: 'PC-01 (Apex VIP)',
+    fromGamerTag: 'ViperX_IGL',
+    toStationName: 'PC-02 (Titan Esports)',
+    toGamerTag: 'ShadowStrike_7',
+    gameTitle: 'CS2 AWP 1v1 Duel (Aim Map)',
+    wager: 'Loser buys Monster Energy 500ml',
+    status: 'Pending',
+    createdAt: '10 mins ago',
+  },
+  {
+    id: 'chal-02',
+    fromStationName: 'Console-01 (PS5 VIP)',
+    fromGamerTag: 'IronFist_Raj',
+    toStationName: 'Console-02 (PS5 Duo)',
+    toGamerTag: 'MishimaGod',
+    gameTitle: 'Tekken 8 (Best of 5 Grudge)',
+    wager: 'Double Cheese Maggi',
+    status: 'Accepted',
+    createdAt: '25 mins ago',
+  },
+];
+
+export const initialGamerGearConfig: import('../types').GamerGearConfig = {
+  mouseDpi: 800,
+  pollingRateHz: 4000,
+  csCrosshairCode: 'CSGO-hH6kO-8zYjR-Z44zN-E74kE-s5KPD',
+  valorantProfile: '0;P;c;5;o;1;0t;1;0l;3;0o;2;0a;1;0f;0;1b;0',
+  preferredAudioVolume: 85,
+};
+

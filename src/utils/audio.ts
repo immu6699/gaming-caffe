@@ -236,6 +236,52 @@ class SoundFX {
       osc.stop(ctx.currentTime + 0.4);
     } catch (e) {}
   }
+
+  // 1v1 Grudge Battle Challenge Fanfare
+  public playBattleChallenge() {
+    if (!this.enabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const chords = [329.63, 440, 523.25, 659.25, 880]; // E Minor rising tension
+      chords.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.08);
+        osc.stop(ctx.currentTime + idx * 0.08 + 0.35);
+      });
+    } catch (e) {}
+  }
+
+  // Cafe PA Counter Voice Announcement (Web Speech API)
+  public speakCafePA(message: string) {
+    if (!this.enabled || typeof window === 'undefined') return;
+    try {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stop ongoing speech
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.rate = 1.05;
+        utterance.pitch = 1.1;
+        utterance.volume = 0.9;
+        
+        // Pick an Indian English or standard voice if available
+        const voices = window.speechSynthesis.getVoices();
+        const indianVoice = voices.find((v) => v.lang.includes('IN') || v.name.includes('India'));
+        if (indianVoice) utterance.voice = indianVoice;
+
+        window.speechSynthesis.speak(utterance);
+      }
+    } catch (e) {
+      console.warn('Speech synthesis unavailable:', e);
+    }
+  }
 }
 
 export const sound = new SoundFX();

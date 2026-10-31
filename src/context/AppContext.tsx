@@ -20,6 +20,8 @@ import {
   ArenaAtmosphere,
   RigHardwareHealth,
   VisualTheme,
+  LanChallenge,
+  GamerGearConfig,
 } from '../types';
 import {
   initialBranches,
@@ -37,6 +39,8 @@ import {
   initialStickyNotes,
   initialLostAndFound,
   initialRigHealth,
+  initialLanChallenges,
+  initialGamerGearConfig,
 } from '../services/mockData';
 import { sound } from '../utils/audio';
 
@@ -206,6 +210,19 @@ interface AppContextType {
   }) => boolean;
   requestDeskAssistance: (stationName: string, reason: string) => void;
   updateCurrentCustomerProfile: (data: Partial<Customer>) => void;
+
+  // 1v1 LAN Battle Challenges
+  lanChallenges: LanChallenge[];
+  sendLanChallenge: (challenge: Omit<LanChallenge, 'id' | 'createdAt' | 'status'>) => void;
+  respondLanChallenge: (id: string, accept: boolean) => void;
+  completeLanChallenge: (id: string, winnerTag: string) => void;
+
+  // Cafe PA Counter Voice Announcement
+  broadcastCafePA: (message: string) => void;
+
+  // Gamer Gear & Crosshair Cloud Sync
+  gamerGearConfig: GamerGearConfig;
+  updateGamerGearConfig: (config: Partial<GamerGearConfig>) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -275,12 +292,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [lostAndFound, setLostAndFound] = useState<LostAndFoundItem[]>(() => loadFromStorage('lost_found', initialLostAndFound));
   const [arenaAtmosphere, setArenaAtmosphere] = useState<ArenaAtmosphere>(() => loadFromStorage('arena_vibe', 'Standard'));
   const [soundEnabled, setSoundEnabledState] = useState<boolean>(() => loadFromStorage('sound_fx', true));
+  // Rig Health & Themes
   const [rigHealth, setRigHealth] = useState<RigHardwareHealth[]>(() => loadFromStorage('rig_health', initialRigHealth));
   const [visualTheme, setVisualThemeState] = useState<VisualTheme>(() => {
     const saved = loadFromStorage<string>('visual_theme', 'enterprise-dark');
-    if (saved === 'cyber-neon') return 'enterprise-dark';
     return (saved as VisualTheme) || 'enterprise-dark';
   });
+
+  // 1v1 LAN Challenges & Gamer Gear
+  const [lanChallenges, setLanChallenges] = useState<LanChallenge[]>(() => loadFromStorage('lan_challenges', initialLanChallenges));
+  const [gamerGearConfig, setGamerGearConfig] = useState<GamerGearConfig>(() => loadFromStorage('gamer_gear', initialGamerGearConfig));
 
   const setSoundEnabled = (enabled: boolean) => {
     setSoundEnabledState(enabled);
@@ -329,6 +350,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => saveToStorage('arena_vibe', arenaAtmosphere), [arenaAtmosphere]);
   useEffect(() => saveToStorage('rig_health', rigHealth), [rigHealth]);
   useEffect(() => saveToStorage('visual_theme', visualTheme), [visualTheme]);
+  useEffect(() => saveToStorage('lan_challenges', lanChallenges), [lanChallenges]);
+  useEffect(() => saveToStorage('gamer_gear', gamerGearConfig), [gamerGearConfig]);
 
   // Current logged in user based on selected role
   const currentUser: StaffMember = staffMembers.find((s) => s.role === activeRole) || staffMembers[0];
@@ -1372,6 +1395,57 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast('Profile Updated', 'Your gamer credentials & preferences are saved.', 'success');
   };
 
+  // 1v1 LAN Challenge Handlers
+  const sendLanChallenge = (challenge: Omit<LanChallenge, 'id' | 'createdAt' | 'status'>) => {
+    const newChallenge: LanChallenge = {
+      ...challenge,
+      id: `chal-${Date.now()}`,
+      createdAt: 'Just now',
+      status: 'Pending',
+    };
+    setLanChallenges((prev) => [newChallenge, ...prev]);
+    sound.playBattleChallenge();
+    addToast('1v1 Challenge Dispatched! ⚔️', `Sent match challenge to ${challenge.toGamerTag} on ${challenge.toStationName}!`, 'warning');
+    sound.speakCafePA(`1v1 challenge sent from ${challenge.fromStationName} to ${challenge.toStationName} for ${challenge.gameTitle}!`);
+  };
+
+  const respondLanChallenge = (id: string, accept: boolean) => {
+    setLanChallenges((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status: accept ? 'Accepted' : 'Declined' } : c))
+    );
+    if (accept) {
+      sound.playSessionStart();
+      addToast('Challenge Accepted! 💥', 'Get ready! Match starting on both stations!', 'success');
+      sound.speakCafePA('LAN grudge match accepted! Stations locked in for battle!');
+    } else {
+      addToast('Challenge Declined', 'Opponent stepped down.', 'info');
+    }
+  };
+
+  const completeLanChallenge = (id: string, winnerTag: string) => {
+    setLanChallenges((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status: 'Completed', winnerTag } : c))
+    );
+    sound.playCoin();
+    addToast('Victory Confirmed! 🏆', `${winnerTag} won the 1v1 grudge match!`, 'success');
+    sound.speakCafePA(`Victory! ${winnerTag} has won the 1v1 grudge match!`);
+  };
+
+  const broadcastCafePA = (message: string) => {
+    sound.speakCafePA(message);
+    addToast('Cafe PA Broadcast 📢', message, 'info');
+  };
+
+  const updateGamerGearConfig = (config: Partial<GamerGearConfig>) => {
+    setGamerGearConfig((prev) => {
+      const updated = { ...prev, ...config };
+      saveToStorage('gamer_gear', updated);
+      return updated;
+    });
+    sound.playClick();
+    addToast('Gear Config Cloud Synced! ⚡', 'DPI & Crosshair profile saved for all cafe PCs.', 'success');
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1485,6 +1559,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         orderFnbFromUser,
         requestDeskAssistance,
         updateCurrentCustomerProfile,
+
+        // 1v1 LAN Challenges & Gear
+        lanChallenges,
+        sendLanChallenge,
+        respondLanChallenge,
+        completeLanChallenge,
+        broadcastCafePA,
+        gamerGearConfig,
+        updateGamerGearConfig,
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { GamingStation } from '../../types';
 import { getStationStatusBadge } from '../common/Badge';
 import { formatINR, getElapsedDuration } from '../../utils/formatters';
@@ -221,6 +222,16 @@ export const StationCard: React.FC<StationCardProps> = ({
               Check-In Booking
             </button>
           )}
+
+          <Link
+            to={`/client/${station.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open Client PC Kiosk Screen (How this PC looks)"
+            className="p-1.5 text-slate-400 hover:text-cyan-400 rounded-lg hover:bg-dark-800 transition-colors"
+          >
+            <Monitor className="w-4 h-4" />
+          </Link>
 
           <button
             onClick={() => onEditStation(station)}

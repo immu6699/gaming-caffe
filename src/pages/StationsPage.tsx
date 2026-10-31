@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { GamingStation, StationType, StationStatus } from '../types';
 import { StationCard } from '../components/stations/StationCard';
@@ -13,6 +14,7 @@ import { getStationStatusBadge } from '../components/common/Badge';
 import { formatINR, getElapsedDuration } from '../utils/formatters';
 import { FloorPlanView } from '../components/floorplan/FloorPlanView';
 import { RigWatchdogModal } from '../components/common/RigWatchdogModal';
+import { sound } from '../utils/audio';
 import {
   Monitor,
   LayoutGrid,
@@ -27,6 +29,13 @@ import {
   Map,
   Sparkles,
   ShieldAlert,
+  Lock,
+  Unlock,
+  AlertTriangle,
+  Volume2,
+  ExternalLink,
+  Clock,
+  Zap,
 } from 'lucide-react';
 
 export const StationsPage: React.FC = () => {
@@ -36,6 +45,8 @@ export const StationsPage: React.FC = () => {
     deleteStation,
     updateStation,
     branches,
+    broadcastCafePA,
+    addToast,
   } = useApp();
 
   const [viewMode, setViewMode] = useState<'map' | 'grid' | 'table'>('map');
@@ -166,6 +177,81 @@ export const StationsPage: React.FC = () => {
             <Plus className="w-4 h-4" /> Add Station
           </button>
         </div>
+      </div>
+
+      {/* 20 CLIENT PCs CENTRAL LAN COMMANDER & REMOTE CONTROLLER */}
+      <div className="rounded-2xl border-2 border-indigo-500/30 bg-gradient-to-r from-[#0d1326] via-[#101833] to-[#0d1326] p-4 sm:p-5 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 p-0.5 shadow-md shadow-indigo-600/30 flex-shrink-0">
+            <div className="w-full h-full bg-[#0d1222] rounded-[10px] flex items-center justify-center">
+              <Monitor className="w-5 h-5 text-cyan-400 animate-pulse" />
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                CENTRAL LAN COMMANDER
+              </span>
+              <span className="text-xs text-zinc-400 font-mono">20 Battle Stations Linked</span>
+            </div>
+            <h3 className="text-base font-black text-white">
+              Remote Client PC Lock, Timer &amp; 1-Hour Warning Hub
+            </h3>
+          </div>
+        </div>
+
+        {/* Quick Stats & Remote Actions */}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+          {/* Quick status chips */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs">
+            <Unlock className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-zinc-400">Active Playing:</span>
+            <span className="font-bold font-mono text-emerald-400">
+              {filteredStations.filter((s) => s.status === 'In Use').length}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-900/80 border border-zinc-800 text-xs">
+            <Lock className="w-3.5 h-3.5 text-red-400" />
+            <span className="text-zinc-400">Locked Ready:</span>
+            <span className="font-bold font-mono text-white">
+              {filteredStations.filter((s) => s.status === 'Available').length}
+            </span>
+          </div>
+
+          {/* Broadcast 5-Min Alert Voice */}
+          <button
+            onClick={() => {
+              sound.playAlert();
+              broadcastCafePA(
+                'Bhaiya, attention all desks! 5 minutes remaining on your 1-hour sessions! Please visit counter or extend on screen.'
+              );
+              addToast(
+                '5-Min Warning Broadcast Sent! 📢',
+                'Synthesized voice notification sent to all active playing desks.',
+                'warning'
+              );
+            }}
+            className="px-3.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+            title="Broadcast 5-Minute Warning voice announcement to all desks"
+          >
+            <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+            <span>Broadcast 5-Min Voice Alert</span>
+          </button>
+
+          {/* Open Client Kiosk Screen Link */}
+          <Link
+            to="/kiosk"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-cyan-600/25 transition-all"
+            title="Open the client-side PC screen display simulator (how the 20 PCs look)"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>Open Client PC Screen</span>
+          </Link>
+        </div>
+
       </div>
 
       {/* Filter and Search Bar */}

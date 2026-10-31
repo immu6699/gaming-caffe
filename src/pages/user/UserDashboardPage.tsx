@@ -24,8 +24,15 @@ import {
   Users,
   Play,
   X,
+  Swords,
+  Smartphone,
+  Radio,
+  Moon,
+  Volume2,
 } from 'lucide-react';
 import { sound } from '../../utils/audio';
+import { LanChallengeModal } from '../../components/user/LanChallengeModal';
+import { MobileDeskRemoteModal } from '../../components/user/MobileDeskRemoteModal';
 
 export const UserDashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -93,6 +100,9 @@ export const UserDashboardPage: React.FC = () => {
   };
 
   const [selectedGameToLaunch, setSelectedGameToLaunch] = useState<CafeGame | null>(null);
+  const [isLanModalOpen, setIsLanModalOpen] = useState(false);
+  const [isMobileRemoteOpen, setIsMobileRemoteOpen] = useState(false);
+  const [selectedChallengeStation, setSelectedChallengeStation] = useState<string | undefined>(undefined);
 
   const handlePlayDashboardGame = (game: CafeGame) => {
     sound.playSessionStart();
@@ -239,26 +249,41 @@ export const UserDashboardPage: React.FC = () => {
             {/* Right: Quick actions for seated player */}
             <div className="flex flex-wrap items-center gap-2">
               <button
+                onClick={() => {
+                  sound.playClick();
+                  setIsMobileRemoteOpen(true);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-cyan-950/30 hover:bg-cyan-900/40 border border-cyan-500/40 text-cyan-300 text-xs font-bold transition-colors flex items-center gap-1.5"
+                title="Open In-Seat Phone Remote Pairing"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                <span>Phone Remote</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  sound.playBattleChallenge();
+                  setIsLanModalOpen(true);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-red-950/30 hover:bg-red-900/40 border border-red-500/40 text-red-300 text-xs font-bold transition-colors flex items-center gap-1.5"
+                title="Challenge an opponent station to 1v1"
+              >
+                <Swords className="w-3.5 h-3.5" />
+                <span>1v1 LAN Battle</span>
+              </button>
+
+              <button
                 onClick={() => quickExtend(30)}
-                className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition-colors flex items-center gap-1.5"
+                className="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition-colors flex items-center gap-1.5"
                 title="Add 30 minutes to your current session"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>+30 Min</span>
               </button>
 
-              <button
-                onClick={() => quickExtend(60)}
-                className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold transition-colors flex items-center gap-1.5"
-                title="Add 1 hour to your current session"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>+1 Hour</span>
-              </button>
-
               <Link
                 to="/user/session"
-                className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
               >
                 <span>Full Desk HUD</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -556,12 +581,27 @@ export const UserDashboardPage: React.FC = () => {
                     <span className="text-xs text-zinc-400 font-normal">/hr</span>
                   </p>
                 </div>
-                <Link
-                  to="/user/stations"
-                  className="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-semibold transition-all"
-                >
-                  Book Slot
-                </Link>
+                {station.status === 'In Use' ? (
+                  <button
+                    onClick={() => {
+                      setSelectedChallengeStation(station.name);
+                      sound.playBattleChallenge();
+                      setIsLanModalOpen(true);
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/30 text-xs font-bold transition-all flex items-center gap-1"
+                    title={`Challenge player at ${station.name}`}
+                  >
+                    <Swords className="w-3.5 h-3.5" />
+                    <span>Challenge 1v1</span>
+                  </button>
+                ) : (
+                  <Link
+                    to="/user/stations"
+                    className="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-semibold transition-all"
+                  >
+                    Book Slot
+                  </Link>
+                )}
               </div>
             </div>
           ))}
@@ -644,6 +684,43 @@ export const UserDashboardPage: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 4.5 MIDNIGHT LAN PARTY ALL-NIGHTER PASS (11 PM - 6 AM) */}
+      <div className="rounded-3xl border-2 border-purple-500/30 bg-gradient-to-r from-[#170a2c] via-[#100720] to-[#070b1a] p-6 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-2 max-w-xl">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1">
+              <Moon className="w-3.5 h-3.5 text-purple-400" />
+              <span>THE 30-YEAR CAFE TRADITION</span>
+            </span>
+            <span className="text-xs font-mono text-cyan-400 font-bold">11:00 PM &ndash; 06:00 AM</span>
+          </div>
+
+          <h3 className="text-xl sm:text-2xl font-black text-white">
+            Midnight LAN All-Nighter VIP Pass
+          </h3>
+          <p className="text-xs text-zinc-300 leading-relaxed">
+            7 uninterrupted hours on 360Hz battle stations + 2 hot Double-Cheese Maggis + chilled energy drink + lights-out esports atmosphere.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden sm:block">
+            <p className="text-[10px] text-zinc-400 uppercase font-semibold">All-Night Flat Rate</p>
+            <p className="text-2xl font-black font-mono text-emerald-400">₹399</p>
+          </div>
+          <button
+            onClick={() => {
+              sound.playCashRegister();
+              addToast('All-Nighter Pass Reserved! 🌙', 'Station locked from 11 PM to 6 AM with midnight snacks included.', 'success');
+            }}
+            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl shadow-purple-600/30 hover:scale-105 active:scale-95 transition-all"
+          >
+            <Moon className="w-4 h-4 fill-current" />
+            <span>Book Night Pass (₹399)</span>
+          </button>
         </div>
       </div>
 
@@ -827,6 +904,19 @@ export const UserDashboardPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* 1v1 LAN Challenge Matchmaker Modal */}
+      <LanChallengeModal
+        isOpen={isLanModalOpen}
+        onClose={() => setIsLanModalOpen(false)}
+        preselectedStationId={selectedChallengeStation}
+      />
+
+      {/* In-Seat Mobile Desk Remote QR Modal */}
+      <MobileDeskRemoteModal
+        isOpen={isMobileRemoteOpen}
+        onClose={() => setIsMobileRemoteOpen(false)}
+      />
 
     </div>
   );

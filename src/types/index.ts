@@ -357,9 +357,34 @@ export interface RigHardwareHealth {
 export type VisualTheme = 
   | 'enterprise-dark'
   | 'white-clean'
+  | 'vice-city'
+  | 'cyberpunk'
+  | 'dust2-tactical'
+  | 'matrix-1995'
   | 'cyber-neon' 
   | 'stealth-gold' 
   | 'crimson-esports' 
   | 'nordic-frost';
+
+export interface LanChallenge {
+  id: string;
+  fromStationName: string;
+  fromGamerTag: string;
+  toStationName: string;
+  toGamerTag: string;
+  gameTitle: string; // e.g. "Tekken 8 1v1", "CS2 AWP Long Duel", "EA FC 24 Derby"
+  wager: string; // e.g. "Loser buys Monster Energy 500ml", "Bragging Rights", "₹100 Cafe Credit"
+  status: 'Pending' | 'Accepted' | 'Declined' | 'Completed';
+  winnerTag?: string;
+  createdAt: string;
+}
+
+export interface GamerGearConfig {
+  mouseDpi: number; // 400, 800, 1600
+  pollingRateHz: number; // 1000, 4000, 8000
+  csCrosshairCode: string;
+  valorantProfile: string;
+  preferredAudioVolume: number;
+}
 
 

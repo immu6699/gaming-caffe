@@ -28,9 +28,17 @@ import {
   ExternalLink,
   Sun,
   Moon,
+  Palette,
+  Swords,
+  Smartphone,
+  Sliders,
 } from 'lucide-react';
 import { ToastContainer } from '../common/Toast';
 import { sound } from '../../utils/audio';
+import { ThemeSwitcherModal } from './ThemeSwitcherModal';
+import { LanChallengeModal } from './LanChallengeModal';
+import { MobileDeskRemoteModal } from './MobileDeskRemoteModal';
+import { GamerGearConfigModal } from './GamerGearConfigModal';
 
 export const UserLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -48,6 +56,7 @@ export const UserLayout: React.FC = () => {
     setSelectedBranchId,
     visualTheme,
     setVisualTheme,
+    lanChallenges,
     addToast,
   } = useApp();
 
@@ -55,6 +64,10 @@ export const UserLayout: React.FC = () => {
   const [isTopUpOpen, setIsTopUpOpen] = useState(false);
   const [isCallStaffOpen, setIsCallStaffOpen] = useState(false);
   const [isProfileSwitcherOpen, setIsProfileSwitcherOpen] = useState(false);
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [isLanModalOpen, setIsLanModalOpen] = useState(false);
+  const [isMobileRemoteOpen, setIsMobileRemoteOpen] = useState(false);
+  const [isGearModalOpen, setIsGearModalOpen] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState<number>(500);
   const [customTopUp, setCustomTopUp] = useState<string>('');
   const [deskReason, setDeskReason] = useState<string>('Peripherals / Mousepad Swap');
@@ -180,36 +193,59 @@ export const UserLayout: React.FC = () => {
                 </Link>
               ) : null}
 
-              {/* Direct Dark 🌙 / White ☀️ Theme Toggle */}
+              {/* 1. Theme Engine Switcher Modal Button */}
               <button
                 onClick={() => {
-                  const nextTheme = visualTheme === 'white-clean' ? 'enterprise-dark' : 'white-clean';
-                  setVisualTheme(nextTheme);
                   sound.playClick();
-                  addToast(
-                    nextTheme === 'white-clean' ? 'White Theme Activated ☀️' : 'Dark Theme Activated 🌙',
-                    nextTheme === 'white-clean' ? 'Switched to clean high-contrast light mode' : 'Switched to sleek obsidian dark mode',
-                    'info'
-                  );
+                  setIsThemeModalOpen(true);
                 }}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
-                  visualTheme === 'white-clean'
-                    ? 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100 shadow-sm'
-                    : 'bg-zinc-900 border-zinc-800 text-indigo-300 hover:border-indigo-500/40 hover:bg-zinc-800'
-                }`}
-                title={visualTheme === 'white-clean' ? 'Switch to Dark Theme 🌙' : 'Switch to White Theme ☀️'}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-pink-400 hover:border-pink-500/40 hover:bg-zinc-800 transition-all text-xs font-semibold shadow-sm"
+                title="Select Gaming Cafe Theme (Vice City, Cyberpunk, Dust 2, 1995 CRT)"
               >
-                {visualTheme === 'white-clean' ? (
-                  <>
-                    <Sun className="w-3.5 h-3.5 text-amber-500" />
-                    <span className="hidden sm:inline">White Theme</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                    <span className="hidden sm:inline">Dark Theme</span>
-                  </>
+                <Palette className="w-3.5 h-3.5 text-pink-400" />
+                <span className="hidden sm:inline">Theme</span>
+              </button>
+
+              {/* 2. 1v1 LAN Battle Challenge Button */}
+              <button
+                onClick={() => {
+                  sound.playBattleChallenge();
+                  setIsLanModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 hover:bg-red-900/40 transition-colors text-xs font-semibold shadow-sm relative"
+                title="Station-to-Station 1v1 Grudge Challenge"
+              >
+                <Swords className="w-3.5 h-3.5 text-red-400" />
+                <span className="hidden md:inline">1v1 LAN</span>
+                {lanChallenges.filter((c) => c.status === 'Pending').length > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-ping absolute -top-0.5 -right-0.5" />
                 )}
+              </button>
+
+              {/* 3. Mobile Desk Remote QR Button */}
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  setIsMobileRemoteOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-cyan-950/30 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-900/40 transition-colors text-xs font-semibold"
+                title="In-Seat Phone Remote Pairing"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="hidden lg:inline">Phone Remote</span>
+              </button>
+
+              {/* 4. Gear & Crosshair Cloud Locker */}
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  setIsGearModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:border-indigo-500/40 hover:text-white transition-colors text-xs font-semibold"
+                title="Mouse DPI, Polling Rate & Crosshair Sync"
+              >
+                <Sliders className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="hidden xl:inline">Gear</span>
               </button>
 
               {/* Call Staff Button */}
@@ -592,6 +628,30 @@ export const UserLayout: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Theme Switcher Engine Modal */}
+      <ThemeSwitcherModal
+        isOpen={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+      />
+
+      {/* 1v1 LAN Challenge Matchmaker Modal */}
+      <LanChallengeModal
+        isOpen={isLanModalOpen}
+        onClose={() => setIsLanModalOpen(false)}
+      />
+
+      {/* In-Seat Mobile Desk Remote QR Modal */}
+      <MobileDeskRemoteModal
+        isOpen={isMobileRemoteOpen}
+        onClose={() => setIsMobileRemoteOpen(false)}
+      />
+
+      {/* Gamer Gear & Crosshair Cloud Locker Modal */}
+      <GamerGearConfigModal
+        isOpen={isGearModalOpen}
+        onClose={() => setIsGearModalOpen(false)}
+      />
 
       {/* Global Toast Notification Container */}
       <ToastContainer />

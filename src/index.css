@@ -18,6 +18,38 @@
     --card-border: rgba(255, 255, 255, 0.08);
   }
 
+  /* Theme: Vice City Neon 1986 (Ocean Beach Synthwave) */
+  [data-theme='vice-city'] {
+    --accent-glow: rgba(236, 72, 153, 0.4);
+    --primary-gradient: linear-gradient(135deg, #ec4899 0%, #d946ef 50%, #06b6d4 100%);
+    --card-surface: #130a21;
+    --card-border: rgba(236, 72, 153, 0.28);
+  }
+
+  /* Theme: Cyberpunk 2077 Overdrive (Night City Cyber Yellow) */
+  [data-theme='cyberpunk'] {
+    --accent-glow: rgba(234, 179, 8, 0.35);
+    --primary-gradient: linear-gradient(135deg, #eab308 0%, #f59e0b 50%, #06b6d4 100%);
+    --card-surface: #0e121a;
+    --card-border: rgba(234, 179, 8, 0.25);
+  }
+
+  /* Theme: de_dust2 Tactical Desert (CS2 Military Desert) */
+  [data-theme='dust2-tactical'] {
+    --accent-glow: rgba(245, 158, 11, 0.35);
+    --primary-gradient: linear-gradient(135deg, #d97706 0%, #b45309 50%, #78350f 100%);
+    --card-surface: #17140f;
+    --card-border: rgba(245, 158, 11, 0.22);
+  }
+
+  /* Theme: 1995 Matrix CRT Terminal (Phosphor Green DOS) */
+  [data-theme='matrix-1995'] {
+    --accent-glow: rgba(34, 197, 94, 0.35);
+    --primary-gradient: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+    --card-surface: #061109;
+    --card-border: rgba(34, 197, 94, 0.25);
+  }
+
   /* Theme 2: Cyber Neon (Classic Esports) */
   [data-theme='cyber-neon'] {
     --accent-glow: rgba(0, 240, 255, 0.35);
