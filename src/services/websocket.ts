@@ -16,9 +16,10 @@ class GamingCafeWebSocketClient {
   }
 
   private getWsUrl(): string {
-    const host = window.location.hostname || 'localhost';
-    // Port 5000 is our backend server
-    return `ws://${host}:5000/ws`;
+    const envUrl = (import.meta as any).env?.VITE_WS_URL;
+    if (envUrl) return envUrl;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${protocol}//${window.location.host}/ws`;
   }
 
   public connect() {
