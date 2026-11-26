@@ -81,7 +81,7 @@
       "name": "PC-04 [VIP Battle Rig]",
       "type": "PC",
       "branchId": "branch-1",
-      "status": "In Use",
+      "status": "Available",
       "hourlyRate": 70,
       "specs": {
         "gpu": "RTX 4080 Super 16GB",
@@ -90,11 +90,6 @@
         "monitor": "27\" 240Hz Fast IPS 2K",
         "peripherals": "Logitech G Pro X Superlight + Ducky One 3"
       },
-      "currentSessionId": "sess-04",
-      "currentCustomerName": "Kabir Singhania",
-      "currentCustomerId": "cust-3",
-      "sessionStartTime": "2026-11-26T05:41:38.771Z",
-      "scheduledEndTime": "2026-11-26T06:41:38.771Z",
       "totalHoursUsed": 540
     },
     {
@@ -393,9 +388,10 @@
       "hourlyRate": 70,
       "estimatedCharge": 70,
       "paymentStatus": "Paid",
-      "paymentMethod": "UPI",
-      "status": "Active",
-      "notes": "Cyberpunk 2077 Max Settings"
+      "paymentMethod": "Cash/Pending",
+      "status": "Completed",
+      "notes": "Cyberpunk 2077 Max Settings",
+      "actualEndTime": "2026-11-26T06:45:37.971Z"
     }
   ],
   "bookings": [],
@@ -452,7 +448,35 @@
       "streakDays": 12
     }
   ],
-  "invoices": [],
+  "invoices": [
+    {
+      "id": "inv-1795675537971",
+      "invoiceNumber": "INV-537971",
+      "referenceType": "Session",
+      "referenceId": "sess-04",
+      "customerName": "Kabir Singhania",
+      "customerPhone": "+91 97234 56789",
+      "branchId": "branch-1",
+      "items": [
+        {
+          "description": "PC-04 [VIP Battle Rig] Gaming Session",
+          "type": "Gaming",
+          "quantity": 1,
+          "rate": 70,
+          "amount": 70
+        }
+      ],
+      "subtotal": 70,
+      "taxAmount": 13,
+      "discountAmount": 0,
+      "totalAmount": 83,
+      "amountPaid": 83,
+      "outstandingAmount": 0,
+      "paymentMethod": "Cash/Pending",
+      "paymentStatus": "Paid",
+      "createdAt": "2026-11-26T06:45:37.971Z"
+    }
+  ],
   "menuItems": [
     {
       "id": "menu-1",
@@ -521,5 +545,5 @@
   "stockItems": [],
   "lanChallenges": [],
   "rigHealth": [],
-  "lastUpdated": "2026-11-26T06:37:38.772Z"
+  "lastUpdated": "2026-11-26T06:45:37.974Z"
 }
