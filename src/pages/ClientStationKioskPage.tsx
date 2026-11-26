@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { wsClient } from '../services/websocket';
 import {
   Monitor,
   Lock,
@@ -98,6 +99,52 @@ export const ClientStationKioskPage: React.FC = () => {
     return () => clearInterval(interval);
   }, [activeSession, activeStation.name, warningDismissed, showWarningModal]);
 
+  // Connect to live LAN WebSocket as a physical Station Screen
+  useEffect(() => {
+    wsClient.register('station', activeStation.id);
+
+    const unsubscribe = wsClient.subscribe((msg) => {
+      // 1. Remote Unlock by Counter PC
+      if (msg.type === 'UNLOCK_STATION' && (msg.stationId === activeStation.id || msg.stationId === paramStationId)) {
+        setIsLockedOut(false);
+        setShowWarningModal(false);
+        setWarningDismissed(false);
+        sound.playSessionStart();
+        sound.speakCafePA(`Station ${activeStation.name} unlocked! Welcome gamer!`);
+        addToast('Station Unlocked by Counter! 🎮', 'Session activated via LAN Master Server.', 'success');
+      }
+
+      // 2. Remote Lock / Expiry
+      if (msg.type === 'LOCK_STATION' && (msg.stationId === activeStation.id || msg.stationId === paramStationId)) {
+        setIsLockedOut(true);
+        setShowWarningModal(false);
+        sound.playAlert();
+        addToast('Station Locked! 🔒', msg.reason || 'Session ended.', 'warning');
+      }
+
+      // 3. 5-Minute Warning Trigger from Server Watchdog or Admin
+      if (msg.type === 'WARNING_5MIN' && (msg.stationId === activeStation.id || msg.stationId === 'ALL')) {
+        setShowWarningModal(true);
+        sound.playAlert();
+        sound.speakCafePA(`Attention on ${activeStation.name}! 5 minutes remaining. Please extend or save game.`);
+        addToast('5-Minute Warning! ⚠️', 'Session expiring soon. Extend your time now!', 'warning');
+      }
+
+      // 4. Session Extension Confirmation from Server
+      if (msg.type === 'SESSION_EXTENDED' && msg.stationId === activeStation.id) {
+        setShowWarningModal(false);
+        setIsLockedOut(false);
+        sound.playSessionStart();
+        sound.speakCafePA(`Station ${activeStation.name} extended by ${msg.minutes} minutes!`);
+        addToast('Session Extended! ⚡', `Added +${msg.minutes} minutes from Server.`, 'success');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [activeStation.id, paramStationId, activeStation.name, addToast]);
+
   // Format time as HH:MM:SS
   const formatTime = (totalSec: number) => {
     const hours = Math.floor(totalSec / 3600);
@@ -110,6 +157,8 @@ export const ClientStationKioskPage: React.FC = () => {
   const handleExtend = (minutes: number) => {
     if (!activeSession) return;
     extendSession(activeSession.id, minutes);
+    // Push real-time extension to Master LAN Server
+    wsClient.requestExtend(activeStation.id, minutes, activeSession.customerName);
     setShowWarningModal(false);
     setIsLockedOut(false);
     setWarningDismissed(true);
@@ -552,3 +601,4 @@ export const ClientStationKioskPage: React.FC = () => {
     </div>
   );
 };
+

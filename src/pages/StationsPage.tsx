@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { wsClient } from '../services/websocket';
 import { GamingStation, StationType, StationStatus } from '../types';
 import { StationCard } from '../components/stations/StationCard';
 import { StationModal } from '../components/stations/StationModal';
@@ -67,6 +68,33 @@ export const StationsPage: React.FC = () => {
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
   const [selectedSessionForEnd, setSelectedSessionForEnd] = useState<any>(null);
   const [watchdogStation, setWatchdogStation] = useState<GamingStation | null>(null);
+
+  // Hook into Master LAN WebSocket Server
+  useEffect(() => {
+    wsClient.register('admin');
+
+    const unsubscribe = wsClient.subscribe((msg) => {
+      if (msg.type === 'ATTENDANT_CALL_ALERT') {
+        sound.playAlert();
+        addToast(
+          `Desk Assistance Called! 🛎️`,
+          `${msg.stationName || msg.stationId}: ${msg.reason || 'Assistance requested at desk'}`,
+          'warning'
+        );
+      }
+      if (msg.type === 'STATION_5MIN_ALERT') {
+        addToast(
+          `5-Min Warning: ${msg.stationName}`,
+          `${msg.customerName} has ${msg.minutesLeft}m remaining.`,
+          'info'
+        );
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [addToast]);
 
   // Filter logic
   const filtered = filteredStations.filter((st) => {
@@ -224,12 +252,14 @@ export const StationsPage: React.FC = () => {
           <button
             onClick={() => {
               sound.playAlert();
-              broadcastCafePA(
-                'Bhaiya, attention all desks! 5 minutes remaining on your 1-hour sessions! Please visit counter or extend on screen.'
-              );
+              const announcement =
+                'Bhaiya, attention all desks! 5 minutes remaining on your 1-hour sessions! Please visit counter or extend on screen.';
+              broadcastCafePA(announcement);
+              wsClient.broadcastPA(announcement);
+              wsClient.broadcast5MinWarning();
               addToast(
                 '5-Min Warning Broadcast Sent! 📢',
-                'Synthesized voice notification sent to all active playing desks.',
+                'Synthesized voice notification sent to all active playing desks via Master LAN Server.',
                 'warning'
               );
             }}
